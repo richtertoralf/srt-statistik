@@ -3,9 +3,20 @@ Testumgebung
 
 IP-Kamera -> rtsp-Stream -> localServer (ffmpeg -> **srt-live-transmit**) -> SRT-Stream -> (cloudServer) ffmpeg -> rtmp-Server
 ```
-# Install srt-live-transmit
+# Install srt-live-transmit aus den Ubuntu Paketquellen 
 sudo apt install srt-tools
-# Install ffmpeg with srt
+
+# oder srt selbst kompilieren:
+sudo apt-get install tclsh pkg-config cmake libssl-dev build-essential
+cd ~
+git clone https://github.com/Haivision/srt  
+cd srt  
+PATH="$HOME/bin:$PATH"  
+./configure  
+make  
+sudo make install
+
+# Install ffmpeg with srt (static build downloaden)
 cd ~
 wget https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz
 tar xvf ffmpeg-git-amd64-static.tar.xz
@@ -22,6 +33,7 @@ ffmpeg -i 'rtsp://192.168.95.55:554/1/h264major' -c copy -f mpegts 'srt://localh
 srt-live-transmit srt://:1995?mode=listener srt://217.160.70.147:1995 -s 1000 -pf json -statsout:stats.log
 # letzten Datensatz aus der Dtei stats.log auslesen und der Variablen last_stat zuweisen
 last_stat=$( tail -n 1 stats.log )
-# testen ob die Anzahl der Klammern '{' und '}' übereinstimmen -> json o.k.
+# testen, ob der letzte Datensatz vollständig ist, mit einem Test
+# ob die Anzahl der Klammern '{' und '}' übereinstimmen -> json o.k.
 if [ $(echo $last_stat | grep -o '{' | wc -w) == $(echo $last_stat | grep -o '}' | wc -w) ]; then echo "json o.k."; else echo "json error"; fi
 ```
