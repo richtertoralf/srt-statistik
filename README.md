@@ -25,6 +25,9 @@ sudo mv ~/ffmpeg-git-*/* /usr/local/bin/
 ```
 
 localServer Programm-Pipe 
+`# JSON Prozessor für die Shell`  
+`sudo apt install jq`   
+
 ```
 # rtsp-Stream zu mpegts umwandeln und als srt-Stream verpacken
 ffmpeg -i 'rtsp://192.168.95.55:554/1/h264major' -c copy -f mpegts 'srt://localhost:1995'
@@ -33,7 +36,11 @@ ffmpeg -i 'rtsp://192.168.95.55:554/1/h264major' -c copy -f mpegts 'srt://localh
 srt-live-transmit srt://:1995?mode=listener srt://217.160.70.147:1995 -s 1000 -pf json -statsout:stats.log
 # letzten Datensatz aus der Dtei stats.log auslesen und der Variablen last_stat zuweisen
 last_stat=$( tail -n 1 stats.log )
-# testen, ob der letzte Datensatz vollständig ist, mit einem Test
+# Testen, ob der letzte Datensatz vollständig ist und ausgewertet werden kann. Testen,
 # ob die Anzahl der Klammern '{' und '}' übereinstimmen -> json o.k.
 if [ $(echo $last_stat | grep -o '{' | wc -w) == $(echo $last_stat | grep -o '}' | wc -w) ]; then echo "json o.k."; else echo "json error"; fi
+# einzelne Werte auswählen und ausgeben
+echo $last_stat | jq .link.rtt
+echo $last_stat | jq .link.bandwidth
+echo $last_stat | jq .recv.mbitRate
 ```
