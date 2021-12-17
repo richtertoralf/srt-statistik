@@ -1,7 +1,7 @@
 # srt-statistik
 **erste Spielereien um die in das SRT-Protkoll eingebauten Statistiken zu nutzen**  
-Testumgebung 
 
+meine Testumgebung:  
 **IP-Kamera** -> rtsp-Stream -> localServer (ffmpeg -> **srt-live-transmit**) -> SRT-Stream -> (cloudServer) ffmpeg -> rtmp-Server
 
 ## srt-live-transmit installieren
