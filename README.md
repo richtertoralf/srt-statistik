@@ -1,4 +1,4 @@
-# srt-statistik
+# srt-statistik mit json und jq in der Bash
 **erste Spielereien, um die in das SRT-Protkoll eingebauten Statistiken zu nutzen**  
 
 meine Testumgebung:  
