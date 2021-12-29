@@ -67,3 +67,12 @@ srt-live-transmit srt://23.88.52.184:9999?mode=caller udp://localhost:50099 -q -
 `exec /usr/local/bin/srt-live-transmit ${sourceVPN} ${obs} -q -s 1000 -pf json -statsout:/home/snowgames/srt2obs/stats$camNr.log`  
 
 `while [ true ]; do last_stat=$( tail -n 1 /home/snowgames/srt2obs/stats71.log ); echo $last_stat | jq ' .link.rtt, .link.bandwidth, .recv.mbitRate'; echo "-------"; sleep 3; done`  
+
+## Einblenden der Streamstatistik in OBS-Studio
+
+Ich erzeuge eine Textdatei, deren Inhalt ich in OBS per "Textquelle" einer Szene hinzufüge und diese mir dann in der Multiview-Ansicht anzeigen lasse.
+
+```
+while [ true ]; do last_stat=$( tail -n 1 /home/snowgames/srt2obs/stats71.log ); echo $last_stat | jq ' .link.rtt, .link.bandwidth, .recv.mbitRate' | tee /home/snowgames/srt2obs/printStats71.txt; echo "-------"; sleep 3; done
+
+```
