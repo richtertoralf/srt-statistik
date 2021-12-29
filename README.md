@@ -1,8 +1,9 @@
 # srt-statistik mit json und jq in der Bash
 **erste Spielereien, um die in das SRT-Protkoll eingebauten Statistiken zu nutzen**  
 
-meine Testumgebung:  
-**IP-Kamera** -> rtsp-Stream -> localServer (ffmpeg -> **srt-live-transmit**) -> SRT-Stream -> (cloudServer) ffmpeg -> rtmp-Server
+meine Testumgebungen:  
+- **IP-Kamera** -> rtsp-Stream -> "localServer (ffmpeg -> **srt-live-transmit**)" -> SRT-Stream -> (cloudServer) ffmpeg -> rtmp-Server  
+- **TestStreamGenerator** in der Cloud (FFmpeg) -> **SRT** -> **srt-live-transmit** local auf dem Rechner -> **UDP** -> **OBS-Studio**  
 
 ## srt-live-transmit installieren
 ```
@@ -30,9 +31,8 @@ tar xvf ffmpeg-git-amd64-static.tar.xz
 rm ffmpeg-git-amd64-static.tar.xz
 sudo mv ~/ffmpeg-git-*/* /usr/local/bin/
 ```
-## json Parser für die Auswertung installieren
-localServer Programm-Pipe 
-`# JSON Prozessor für die Shell`  
+## json Parser für die Auswertung installieren  
+`# JSON Prozessor für die Shell - getestet mit Ubuntu 20.04`  
 `sudo apt install jq`   
 
 # spielen mit json und jq in der Bash
