@@ -61,3 +61,9 @@ echo $last_stat | jq .recv.mbitRate
 # und hier die kurze Variante, ohne erst etwas in eine Datei zu schreiben:  
 srt-live-transmit srt://23.88.52.184:9999?mode=caller udp://localhost:50099 -q -s 200 -pf json | jq ' .link.rtt, .link.bandwidth, .recv.mbitRate'
 ```
+
+## Verwendung in einem Skript:
+
+`exec /usr/local/bin/srt-live-transmit ${sourceVPN} ${obs} -q -s 1000 -pf json -statsout:/home/snowgames/srt2obs/stats$camNr.log`  
+
+`while [ true ]; do last_stat=$( tail -n 1 /home/snowgames/srt2obs/stats71.log ); echo $last_stat | jq ' .link.rtt, .link.bandwidth, .recv.mbitRate'; echo "-------"; sleep 3; done`  
