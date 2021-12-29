@@ -45,7 +45,7 @@ srt-live-transmit srt://:1995?mode=listener srt://217.160.70.147:1995 -s 1000 -p
 # oder
 # einen SRT-Stream abholen, z.B. vom *StreamGenerator aus der Cloud* https://github.com/richtertoralf/testStreamGenerator.git  
 # und die Statistikdaten speichern:  
-# srt-live-transmit srt://23.88.52.184:9999?mode=caller udp://localhost:50099 -v -s 200 -pf json -statsout:stats.log  
+srt-live-transmit srt://23.88.52.184:9999?mode=caller udp://localhost:50099 -v -s 200 -pf json -statsout:stats.log  
 #
 # dann, den jeweils letzten Datensatz aus der Datei stats.log auslesen und der Variablen last_stat zuweisen 
 last_stat=$( tail -n 1 stats.log )
@@ -57,4 +57,7 @@ if [ $(echo $last_stat | grep -o '{' | wc -w) == $(echo $last_stat | grep -o '}'
 echo $last_stat | jq .link.rtt
 echo $last_stat | jq .link.bandwidth
 echo $last_stat | jq .recv.mbitRate
+
+# und hier die kurze Variante, ohne erst etwas in eine Datei zu schreiben:  
+srt-live-transmit srt://23.88.52.184:9999?mode=caller udp://localhost:50099 -q -s 200 -pf json | jq ' .link.rtt, .link.bandwidth, .recv.mbitRate'
 ```
