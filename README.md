@@ -41,11 +41,11 @@ sudo mv ~/ffmpeg-git-*/* /usr/local/bin/
 ffmpeg -i 'rtsp://192.168.95.55:554/1/h264major' -c copy -f mpegts 'srt://localhost:1995'
 # srt-Stream mit srt-live-transmit auswerten und zum rtmp-Server in die Cloud weiterleiten
 # und die Statistikdaten im json-Format in die Datei stats.log speichern
-srt-live-transmit srt://:1995?mode=listener srt://217.160.70.147:1995 -s 1000 -pf json -statsout:stats.log
+srt-live-transmit srt://:1995?mode=listener srt://xxx.xxx.xxx.xxx:1995 -s 1000 -pf json -statsout:stats.log
 # oder
 # einen SRT-Stream abholen, z.B. vom *StreamGenerator aus der Cloud* https://github.com/richtertoralf/testStreamGenerator.git  
 # und die Statistikdaten speichern:  
-srt-live-transmit srt://23.88.52.184:9999?mode=caller udp://localhost:50099 -v -s 200 -pf json -statsout:stats.log  
+srt-live-transmit srt://xxx.xxx.xxx.xxx:9999?mode=caller udp://localhost:50099 -v -s 200 -pf json -statsout:stats.log  
 #
 # dann, den jeweils letzten Datensatz aus der Datei stats.log auslesen und der Variablen last_stat zuweisen 
 last_stat=$( tail -n 1 stats.log )
@@ -59,7 +59,7 @@ echo $last_stat | jq .link.bandwidth
 echo $last_stat | jq .recv.mbitRate
 
 # und hier die kurze Variante, ohne erst etwas in eine Datei zu schreiben:  
-srt-live-transmit srt://23.88.52.184:9999?mode=caller udp://localhost:50099 -q -s 200 -pf json | jq ' .link.rtt, .link.bandwidth, .recv.mbitRate'
+srt-live-transmit srt://xxx.xxx.xxx.xxx:9999?mode=caller udp://localhost:50099 -q -s 200 -pf json | jq ' .link.rtt, .link.bandwidth, .recv.mbitRate'
 ```
 
 ## Verwendung in einem Skript:
