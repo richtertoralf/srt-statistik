@@ -76,3 +76,37 @@ Ich erzeuge eine Textdatei, deren Inhalt ich in OBS per "Textquelle" einer Szene
 while [ true ]; do last_stat=$( tail -n 1 /home/snowgames/srt2obs/stats71.log ); echo $last_stat | jq ' .link.rtt, .link.bandwidth, .recv.mbitRate' | tee /home/snowgames/srt2obs/printStats71.txt; echo "-------"; sleep 3; done
 
 ```
+## Beispielskript
+```
+#!/bin/bash
+
+# Dieses Skript holt den letzten, von srt-live-transmit generierten Statistikdatensatz
+# aus dem "log_file" und schreibt, wenn es neue Werte gibt, 
+# Ping-RTT, verfügbare Link-Bandbreite und die Bitrate des SRT-Streams in das "txt_file".
+
+# Die CamNr muss beim Aufruf des Skriptes mit übergeben werden.
+# Mögliche CamNummern sind 51,52,..56, 61,62,..69, 71,72,73,74.
+# z.B. "./stats2txt.sh 71 &"
+# Es erfolgt keine Überprüfung auf richtige Syntax.
+# Mit "&" öffnest du für dieses Skript eine neu Shell und schickst sie in den Hintergrund.
+
+camNr=$1
+log_file=stats$camNr.log
+txt_file=printStats$camNr.txt
+path2stream="/home/snowgames/srt2obs"
+
+while [ true ]; do
+  last_stat=$( tail -n 1 $path2stream/$log_file | jq '.timepoint, .link.rtt, .link.bandwidth, .recv.mb>
+  current_timepoint=$(echo $last_stat | cut -d ' ' -f 1)
+  rtt=$(echo $last_stat | cut -d ' ' -f 2)
+  bandwidth=$(echo $last_stat | cut -d ' ' -f 3)
+  mbitRate=$(echo $last_stat | cut -d ' ' -f 4)
+  if  [[ "$current_timepoint" != "$last_timepoint" ]]; then
+    # current_timepoint formatieren, auf Uhrzeit beschneiden
+    time_point=$( echo $current_timepoint | cut -d "T" -f2 | cut -d "." -f1 )
+    printf "%10s%20s\n%10s%10s%10s\n" $time_point $log_file $rtt $bandwidth $mbitRate > $path2stream/$>
+  fi
+  sleep 1
+  last_timepoint=$current_timepoint
+done 
+```
