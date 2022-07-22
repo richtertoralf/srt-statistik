@@ -101,6 +101,15 @@ while [ true ]; do
   rtt=$(echo $last_stat | cut -d ' ' -f 2)
   bandwidth=$(echo $last_stat | cut -d ' ' -f 3)
   mbitRate=$(echo $last_stat | cut -d ' ' -f 4)
+  # Das geht auch ohne "cut":
+  # last_stat=( $( tail -n 1 $path2stream/statslog/$log_file | jq '.timepoint, .link.rtt, .link.bandwidth, .recv.mbitRate' ) )
+  # Jetzt hast du die Werte in einem Array. Kannst du so testen:
+  # echo "timepoint: ${last_stat[0]}"
+  # current_timepoint=${last_stat[0]}
+  # echo "link.rtt: ${last_stat[1]}"
+  # echo "link.bandwidth: ${last_stat[2]}"
+  # echo "recv.mbitRate: ${last_stat[3]}"
+  
   if  [[ "$current_timepoint" != "$last_timepoint" ]]; then
     # current_timepoint formatieren, auf Uhrzeit beschneiden
     time_point=$( echo $current_timepoint | cut -d "T" -f2 | cut -d "." -f1 )
