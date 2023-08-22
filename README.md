@@ -119,3 +119,49 @@ while [ true ]; do
   last_timepoint=$current_timepoint
 done 
 ```
+oder besser mit `jq` anstatt `cut`:
+```
+#!/bin/bash
+
+# Dieses Skript holt den letzten von srt-live-transmit generierten Statistikdatensatz
+# aus dem "log_file" und schreibt, wenn es neue Werte gibt,
+# Ping-RTT, verfügbare Link-Bandbreite und die Bitrate des SRT-Streams in das "txt_file".
+
+# Die CamNr muss beim Aufruf des Skriptes mit übergeben werden.
+# Mögliche CamNummern sind 51, 52, ... 56, 61, 62, ... 69, 71, 72, 73, 74.
+# z.B. "./stats2txt.sh 71 &"
+# Es erfolgt keine Überprüfung auf richtige Syntax.
+# Mit "&" öffnest du für dieses Skript eine neue Shell und schickst sie in den Hintergrund.
+
+# Konfiguration
+camNr=$1
+log_file=stats$camNr.log
+txt_file=printStats$camNr.txt
+path2stream="/home/snowgames/srt2obs"
+
+# Hauptschleife
+while true; do
+  # Statistikdaten extrahieren
+  last_stat=$(tail -n 1 "$path2stream/$log_file" | jq '.timepoint, .link.rtt, .link.bandwidth, .recv.mbitRate')
+  
+  # Werte verarbeiten
+  current_timepoint=$(echo "$last_stat" | jq -r '.[0]')
+  rtt=$(echo "$last_stat" | jq -r '.[1]')
+  bandwidth=$(echo "$last_stat" | jq -r '.[2]')
+  mbitRate=$(echo "$last_stat" | jq -r '.[3]')
+  
+  # Neue Werte überprüfen
+  if [[ "$current_timepoint" != "$last_timepoint" ]]; then
+    # Zeitpunkt formatieren
+    time_point=$(date -d "$current_timepoint" +"%T")
+    
+    # Werte in Datei schreiben
+    printf "%10s%20s\n%10s%10s%10s\n" "$time_point" "$log_file" "$rtt" "$bandwidth" "$mbitRate" > "$path2stream/$txt_file"
+  fi
+  
+  # Warten und letzten Zeitpunkt aktualisieren
+  sleep 1
+  last_timepoint="$current_timepoint"
+done
+
+```
